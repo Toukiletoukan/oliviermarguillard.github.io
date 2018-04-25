@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html ⚡>
+<head>
+    <meta charset="utf-8">
+
+    <title>Cosmos DB - Bulk Insert / Update en .Net</title>
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+
+    <link rel="shortcut icon" href="../../favicon.ico">
+
+    <link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon" />
+    <link rel="canonical" href="../index.html" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    
+    <meta property="og:site_name" content="Pattern Austère" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Cosmos DB - Bulk Insert / Update en .Net" />
+    <meta property="og:description" content="Pour ce premier billet, nous allons nous intéresser aux bases Cosmos DB. Je ne vous ferai pas ici l&#x27;histoire du produit, vous en apprendrez bien plus en visitant le lien précédent. Par ailleurs, nous allons nous concentrer ici sur l&#x27;API &amp;quot;SQL&amp;quot;, anciennement appelée &amp;quot;documentdb&amp;quot;. J&#x27;ai implémenté" />
+    <meta property="og:url" content="https://toukiletoukan.github.io/cosmos-db-bulk-import/" />
+    <meta property="article:published_time" content="2018-04-20T15:40:23.000Z" />
+    <meta property="article:modified_time" content="2018-04-25T09:47:45.000Z" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Cosmos DB - Bulk Insert / Update en .Net" />
+    <meta name="twitter:description" content="Pour ce premier billet, nous allons nous intéresser aux bases Cosmos DB. Je ne vous ferai pas ici l&#x27;histoire du produit, vous en apprendrez bien plus en visitant le lien précédent. Par ailleurs, nous allons nous concentrer ici sur l&#x27;API &amp;quot;SQL&amp;quot;, anciennement appelée &amp;quot;documentdb&amp;quot;. J&#x27;ai implémenté" />
+    <meta name="twitter:url" content="https://toukiletoukan.github.io/cosmos-db-bulk-import/" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Olivier Marguillard" />
+    <meta name="twitter:site" content="@holy_vier" />
+    <meta name="twitter:creator" content="@holy_vier" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Pattern Austère",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://toukiletoukan.github.io/favicon.ico",
+            "width": 60,
+            "height": 60
+        }
+    },
+    "author": {
+        "@type": "Person",
+        "name": "Olivier Marguillard",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://toukiletoukan.github.io/content/images/2018/04/photo_profile.jpg",
+            "width": 400,
+            "height": 400
+        },
+        "url": "https://toukiletoukan.github.io/author/olivier/",
+        "sameAs": [
+            "https://twitter.com/holy_vier"
+        ]
+    },
+    "headline": "Cosmos DB - Bulk Insert / Update en .Net",
+    "url": "https://toukiletoukan.github.io/cosmos-db-bulk-import/",
+    "datePublished": "2018-04-20T15:40:23.000Z",
+    "dateModified": "2018-04-25T09:47:45.000Z",
+    "description": "Pour ce premier billet, nous allons nous intéresser aux bases Cosmos DB. Je ne vous ferai pas ici l&#x27;histoire du produit, vous en apprendrez bien plus en visitant le lien précédent. Par ailleurs, nous allons nous concentrer ici sur l&#x27;API &amp;quot;SQL&amp;quot;, anciennement appelée &amp;quot;documentdb&amp;quot;. J&#x27;ai implémenté",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://toukiletoukan.github.io/"
+    }
+}
+    </script>
+
+    <meta name="generator" content="Ghost 1.22" />
+    <link rel="alternate" type="application/rss+xml" title="Pattern Austère" href="../../rss/index.html" />
+
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,600,400" />
+    <style amp-custom>html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}body{margin:0}article,aside,details,figcaption,figure,footer,header,main,menu,nav,section,summary{display:block}audio,canvas,progress,video{display:inline-block;vertical-align:baseline}audio:not([controls]){display:none;height:0}[hidden],template{display:none}a{background-color:transparent}a:active,a:hover{outline:0}abbr[title]{border-bottom:1px dotted}b,strong{font-weight:bold}dfn{font-style:italic}h1{margin:0.67em 0;font-size:2em}mark{background:#ff0;color:#000}small{font-size:80%}sub,sup{position:relative;vertical-align:baseline;font-size:75%;line-height:0}sup{top:-0.5em}sub{bottom:-0.25em}img{border:0}amp-img{border:0}svg:not(:root){overflow:hidden}figure{margin:1em 40px}hr{box-sizing:content-box;height:0}pre{overflow:auto}code,kbd,pre,samp{font-family:monospace, monospace;font-size:1em}button,input,optgroup,select,textarea{margin:0;color:inherit;font:inherit}button{overflow:visible}button,select{text-transform:none}button,html input[type="button"],input[type="reset"],input[type="submit"]{cursor:pointer;-webkit-appearance:button}button[disabled],html input[disabled]{cursor:default}button::-moz-focus-inner,input::-moz-focus-inner{padding:0;border:0}input{line-height:normal}input[type="checkbox"],input[type="radio"]{box-sizing:border-box;padding:0}input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{height:auto}input[type="search"]{-webkit-appearance:textfield}input[type="search"]::-webkit-search-cancel-button,input[type="search"]::-webkit-search-decoration{-webkit-appearance:none}fieldset{margin:0 2px;padding:0.35em 0.625em 0.75em;border:1px solid #c0c0c0}legend{padding:0;border:0}textarea{overflow:auto}optgroup{font-weight:bold}table{border-spacing:0;border-collapse:collapse}td,th{padding:0}html{max-height:100%;height:100%;font-size:62.5%;-webkit-tap-highlight-color:rgba(0, 0, 0, 0)}body{max-height:100%;height:100%;color:#3a4145;background:#f4f8fb;letter-spacing:0.01rem;font-family:"Merriweather", serif;font-size:1.8rem;line-height:1.75em;text-rendering:geometricPrecision;-webkit-font-feature-settings:"kern" 1;-moz-font-feature-settings:"kern" 1;-o-font-feature-settings:"kern" 1}::-moz-selection{background:#d6edff}::selection{background:#d6edff}h1,h2,h3,h4,h5,h6{margin:0 0 0.3em 0;color:#2e2e2e;font-family:"Open Sans", sans-serif;line-height:1.15em;text-rendering:geometricPrecision;-webkit-font-feature-settings:"dlig" 1, "liga" 1, "lnum" 1, "kern" 1;-moz-font-feature-settings:"dlig" 1, "liga" 1, "lnum" 1, "kern" 1;-o-font-feature-settings:"dlig" 1, "liga" 1, "lnum" 1, "kern" 1}h1{text-indent:-2px;letter-spacing:-1px;font-size:2.6rem}h2{letter-spacing:0;font-size:2.4rem}h3{letter-spacing:-0.6px;font-size:2.1rem}h4{font-size:1.9rem}h5{font-size:1.8rem}h6{font-size:1.8rem}a{color:#4a4a4a}a:hover{color:#111}p,ul,ol,dl{margin:0 0 2.5rem 0;font-size:1.5rem;text-rendering:geometricPrecision;-webkit-font-feature-settings:"liga" 1, "onum" 1, "kern" 1;-moz-font-feature-settings:"liga" 1, "onum" 1, "kern" 1;-o-font-feature-settings:"liga" 1, "onum" 1, "kern" 1}ol,ul{padding-left:2em}ol ol,ul ul,ul ol,ol ul{margin:0 0 0.4em 0;padding-left:2em}dl dt{float:left;clear:left;overflow:hidden;margin-bottom:1em;width:180px;text-align:right;text-overflow:ellipsis;white-space:nowrap;font-weight:700}dl dd{margin-bottom:1em;margin-left:200px}li{margin:0.4em 0}li li{margin:0}hr{display:block;margin:1.75em 0;padding:0;height:1px;border:0;border-top:#efefef 1px solid}blockquote{box-sizing:border-box;margin:1.75em 0 1.75em 0;padding:0 0 0 1.75em;border-left:#4a4a4a 0.4em solid;-moz-box-sizing:border-box}blockquote p{margin:0.8em 0;font-style:italic}blockquote small{display:inline-block;margin:0.8em 0 0.8em 1.5em;color:#ccc;font-size:0.9em}blockquote small:before{content:"\2014 \00A0"}blockquote cite{font-weight:700}blockquote cite a{font-weight:normal}mark{background-color:#fdffb6}code,tt{padding:1px 3px;border:#e3edf3 1px solid;background:#f7fafb;border-radius:2px;white-space:pre-wrap;font-family:Inconsolata, monospace, sans-serif;font-size:0.85em;font-feature-settings:"liga" 0;-webkit-font-feature-settings:"liga" 0;-moz-font-feature-settings:"liga" 0}pre{overflow:auto;box-sizing:border-box;margin:0 0 1.75em 0;padding:10px;width:100%;border:#e3edf3 1px solid;background:#f7fafb;border-radius:3px;white-space:pre;font-family:Inconsolata, monospace, sans-serif;font-size:0.9em;-moz-box-sizing:border-box}pre code,pre tt{padding:0;border:none;background:transparent;white-space:pre-wrap;font-size:inherit}kbd{display:inline-block;margin-bottom:0.4em;padding:1px 8px;border:#ccc 1px solid;background:#f4f4f4;border-radius:4px;box-shadow:0 1px 0 rgba(0, 0, 0, 0.2), 0 1px 0 0 #fff inset;color:#666;text-shadow:#fff 0 1px 0;font-size:0.9em;font-weight:700}table{box-sizing:border-box;margin:1.75em 0;max-width:100%;width:100%;background-color:transparent;-moz-box-sizing:border-box}table th,table td{padding:8px;border-top:#efefef 1px solid;vertical-align:top;text-align:left;line-height:20px}table th{color:#000}table caption + thead tr:first-child th,table caption + thead tr:first-child td,table colgroup + thead tr:first-child th,table colgroup + thead tr:first-child td,table thead:first-child tr:first-child th,table thead:first-child tr:first-child td{border-top:0}table tbody + tbody{border-top:#efefef 2px solid}table table table{background-color:#fff}table tbody > tr:nth-child(odd) > td,table tbody > tr:nth-child(odd) > th{background-color:#f6f6f6}table.plain tbody > tr:nth-child(odd) > td,table.plain tbody > tr:nth-child(odd) > th{background:transparent}iframe,amp-iframe,.fluid-width-video-wrapper{display:block;margin:1.75em 0}.fluid-width-video-wrapper iframe,.fluid-width-video-wrapper amp-iframe{margin:0}textarea,select,input{margin:0 0 5px 0;padding:6px 9px;width:260px;outline:0;border:#e7eef2 1px solid;background:#fff;border-radius:4px;box-shadow:none;font-family:"Open Sans", sans-serif;font-size:1.6rem;line-height:1.4em;font-weight:100;-webkit-appearance:none}textarea{min-width:250px;min-height:80px;max-width:340px;width:100%;height:auto}input[type="text"]:focus,input[type="email"]:focus,input[type="search"]:focus,input[type="tel"]:focus,input[type="url"]:focus,input[type="password"]:focus,input[type="number"]:focus,input[type="date"]:focus,input[type="month"]:focus,input[type="week"]:focus,input[type="time"]:focus,input[type="datetime"]:focus,input[type="datetime-local"]:focus,textarea:focus{outline:none;outline-width:0;border:#bbc7cc 1px solid;background:#fff}select{width:270px;height:30px;line-height:30px}.clearfix:before,.clearfix:after{content:" ";display:table}.clearfix:after{clear:both}.clearfix{zoom:1}.main-header{position:relative;display:table;overflow:hidden;box-sizing:border-box;width:100%;height:50px;background:#5ba4e5 no-repeat center center;background-size:cover;text-align:left;-webkit-box-sizing:border-box;-moz-box-sizing:border-box}.content{background:#fff;padding-top:15px}.blog-title,.content{margin:auto;max-width:600px}.blog-title a{display:block;padding-right:16px;padding-left:16px;height:50px;color:#fff;text-decoration:none;font-family:"Open Sans", sans-serif;font-size:16px;line-height:50px;font-weight:600}.post{position:relative;margin-top:0;margin-right:16px;margin-left:16px;padding-bottom:0;max-width:100%;border-bottom:#ebf2f6 1px solid;word-wrap:break-word;font-size:0.95em;line-height:1.65em}.post-header{margin-bottom:1rem}.post-title{margin-bottom:0}.post-title a{text-decoration:none}.post-meta{display:block;margin:3px 0 0 0;color:#9eabb3;font-family:"Open Sans", sans-serif;font-size:1.3rem;line-height:2.2rem}.post-meta a{color:#9eabb3;text-decoration:none}.post-meta a:hover{text-decoration:underline}.post-meta .author{margin:0;font-size:1.3rem;line-height:1.3em}.post-date{display:inline-block;text-transform:uppercase;white-space:nowrap;font-size:1.2rem;line-height:1.2em}.post-image{margin:0;padding-top:3rem;padding-bottom:30px;border-top:1px #E8E8E8 solid}.post-content amp-img,.post-content amp-anim{position:relative;left:50%;display:block;padding:0;min-width:0;max-width:112%;width:calc(100% + 32px);height:auto;transform:translateX(-50%);-webkit-transform:translateX(-50%);-ms-transform:translateX(-50%)}.footnotes{font-size:1.3rem;line-height:1.6em;font-style:italic}.footnotes li{margin:0.6rem 0}.footnotes p{margin:0}.footnotes p a:last-child{text-decoration:none}.site-footer{position:relative;margin:0 auto 20px auto;padding:1rem 15px;max-width:600px;color:rgba(0,0,0,0.5);font-family:"Open Sans", sans-serif;font-size:1.1rem;line-height:1.75em}.site-footer a{color:rgba(0,0,0,0.5);text-decoration:none;font-weight:bold}.site-footer a:hover{border-bottom:#bbc7cc 1px solid}.poweredby{display:block;float:right;width:45%;text-align:right}.copyright{display:block;float:left;width:45%}</style>
+
+    <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
+    <script async src="https://cdn.ampproject.org/v0.js"></script>
+
+    
+
+</head>
+
+<body class="amp-template">
+    <header class="main-header">
+        <nav class="blog-title">
+            <a href="../../index.html">Pattern Austère</a>
+        </nav>
+    </header>
+
+    <main class="content" role="main">
+        <article class="post">
+
+            <header class="post-header">
+                <h1 class="post-title">Cosmos DB - Bulk Insert / Update en .Net</h1>
+                <section class="post-meta">
+                    <p class="author">by <a href="../../author/olivier/index.html">Olivier Marguillard</a></p>
+                    <time class="post-date" datetime="2018-04-20">2018-04-20</time>
+                </section>
+            </header>
+            <section class="post-content">
+
+                <div class="kg-card-markdown"><p>Pour ce premier billet, nous allons nous intéresser aux bases <a href="https://azure.microsoft.com/en-us/services/cosmos-db/">Cosmos DB</a>.</p>
+<p>Je ne vous ferai pas ici l'histoire du produit, vous en apprendrez bien plus en visitant le lien précédent. Par ailleurs, nous allons nous concentrer ici sur l'API &quot;SQL&quot;, anciennement appelée &quot;documentdb&quot;.</p>
+<p>J'ai implémenté récemment ce type de base NoSQL afin de stocker un volume relativement important de données - environ 30 000 documents - par jour. Ayant fait un petit ETL maison, que je migrerai fort probablement vers <a href="https://azure.microsoft.com/en-us/services/data-factory/">ADF</a> à terme, j'ai rapidement été confronté à la nécessité d'envoyer des ensembles de données par paquets afin d'optimiser les temps de traitement.</p>
+<p>Il était jusqu'alors un peu contraignant d'implémenter des insertions et modifications en &quot;bulk&quot;, tout du moins pour un développeur .Net comme moi, peu enclin à écrire du javascript...</p>
+<p>Du Javascript ?!</p>
+<p>Oui, vous avez bien lu ! Le moyen recommandé par l'équipe produit pour faire des opérations bulk consiste à écrire des procédures stockées en javascript qui seront executées directement côté serveur. La bonne nouvelle c'est qu'ici nous n'allons pas nous en soucier. Par contre, si vous souhaitez en savoir plus sur les procédures stockées sur CosmosDB, je vous recommande de suivre <a href="https://azure.microsoft.com/en-us/resources/videos/azure-cosmosdb-server-side-programmability/">cette vidéo</a>.</p>
+<p>Bref, trève de bavardage, place au code !</p>
+<h2>Contexte</h2>
+<p>Nous allons construire ici une application console, très simple, permettant de générer un ensemble de données et de les envoyer dans une base CosmosDB en bulk.</p>
+<p>Nos documents auront cette structure:</p>
+<pre><code class="language-csharp">    public class FakeOrder
+    {
+        public string AccountNumber { get; set; }
+        public string id { get; set; }
+        public DateTime OrderDate { get; set; }
+        public string Product { get; set; }
+        public int DocumentIndex { get; set; }
+       
+    }
+</code></pre>
+<p>Nous utiliserons la propriété &quot;AccountNumber&quot; comme clé de partitionnement et la propriété id sera la clé unique de notre document. L'idée étant d'avoir un nombre identique de documents créés par partition.</p>
+<p>Voici ensuite une méthode simple de génération de documents:</p>
+<pre><code>public static IEnumerable&lt;FakeOrder&gt; GenerateFakeOrders(
+    int numberToGeneratePerPartition = 1000,
+    int numberOfPartitions = 50,
+    int initialAccountNumber = 1)
+{
+    List&lt;FakeOrder&gt; result = new List&lt;FakeOrder&gt;();
+
+    for (int x = 0; x &lt; numberOfPartitions; x++)
+    {
+        for (int i = 0; i &lt; numberToGeneratePerPartition; i++)
+        {
+            result.Add(new FakeOrder
+            {
+                AccountNumber = (initialAccountNumber + x).ToString(),
+                OrderDate = DateTime.UtcNow.AddDays(-i),
+                DocumentIndex = i,
+                Product = __aSyNcId_&lt;_NZGXRvcs__quot;Produit XXX-{i}&quot;,
+                id = __aSyNcId_&lt;_NZGXRvcs__quot;{(initialAccountNumber + x).ToString()}-{x}-{i}&quot;
+            });
+        }
+    }
+
+    return result;
+}
+</code></pre>
+<h2>Dépendances</h2>
+<p>Ajoutons ensuite une référence au package nuget Microsoft.Azure.CosmosDB.BulkExecutor.</p>
+<pre><code>Install-Package Microsoft.Azure.CosmosDB.BulkExecutor
+</code></pre>
+<p>Ce package permet d'effectuer imports et mises à jours des données en bulk. L'ajout dans votre projet de ce nuget ajoutera automatiquement une dépendance au package Microsoft.Azure.DocumentDB, utilisé pour toutes les interactions avec les bases CosmosDB avec l'API DocumentDB / SQL.</p>
+<p>Ce dernier package permet d'effectuer des opérations de gestion (création de bases, création de collections, etc.) ainsi que le requêtage. Concrètement, il apporte une couche de simplification au dessus de l'API REST de CosmosDB.</p>
+<h2>Initialisation</h2>
+<p>Nous allons utiliser le client &quot;DocumentClient&quot; afin d'initialiser notre base de données de tests ainsi que la collection qui va porter nos documents. Je passe volontairement l'étape de création de la ressource Cosmos DB, celle-ci est suffisament illustrée dans la <a href="https://docs.microsoft.com/en-us/azure/cosmos-db/create-sql-api-dotnet#create-a-database-account">documentation</a>. Pensez bien, lors de cette étape, à récupérer l'URL de votre compte Cosmos DB (Url du type https://&lt;account_name&gt;.documents.azure.com:443) ainsi que la clé.</p>
+<p>Commençons par créer notre base de données et notre collection de documents. Pour cela, nous initialisons notre client et précisons les informations de base de notre collection.</p>
+<pre><code>public static async Task InitializeDatabaseAndCollection(
+    string databaseName,
+    string collectionName,
+    int throughput = 1000)
+{
+    Uri serviceEndpoint = new Uri(_documentdbUrl);
+
+    _documentClient = new DocumentClient(serviceEndpoint, _documentdbKey);
+
+    _documentCollection = new DocumentCollection();
+    _documentCollection.Id = _collection;
+    _documentCollection.PartitionKey.Paths.Add(&quot;/AccountNumber&quot;);
+    _documentCollection.IndexingPolicy.Automatic = true;
+    _documentCollection.IndexingPolicy.IndexingMode = IndexingMode.Consistent;
+
+    await DropCollectionIfExistAsync(databaseName, collectionName);
+
+    // Create database
+    Database database = new Database() { Id = _database };
+
+    await _documentClient.CreateDatabaseIfNotExistsAsync(database);
+
+    // Create collection
+    await _documentClient.CreateDocumentCollectionIfNotExistsAsync(
+                UriFactory.CreateDatabaseUri(_database),
+                _documentCollection,
+                new RequestOptions { OfferThroughput = throughput });
+}
+</code></pre>
+<p>Afin de repartir d'une base vide à chaque lancement de l'application de test, j'ai ajouté la méthode &quot;DropCollectionIfExistsAsync&quot; permettant de faire du nettoyage si besoin:</p>
+<pre><code>public static async Task DropCollectionIfExistAsync(
+    string database,
+    string collection)
+{
+    var existingCollection = await _documentClient.ReadDocumentCollectionAsync(
+        UriFactory.CreateDocumentCollectionUri(database, collection));
+    if(existingCollection != null)
+    {
+        await _documentClient.DeleteDocumentCollectionAsync(
+            UriFactory.CreateDocumentCollectionUri(database, collection));
+    }
+}
+</code></pre>
+<h2>Import</h2>
+<p>Une fois notre base et notre collection initialisées, nous allons utiliser le &quot;BulkExecutor&quot; pour envoyer nos objets de tests dans CosmosDB.</p>
+<p>Voici une méthode dédiée à cette tâche:</p>
+<pre><code>public static async Task&lt;BulkImportResponse&gt; BulkInsertDocuments(
+    string database,
+    string collection,
+    IEnumerable&lt;object&gt; documents,
+    bool upsert = false)
+{
+    Uri collectionUri = UriFactory.CreateDocumentCollectionUri(database, collection);
+    var collectionResource = await _documentClient.ReadDocumentCollectionAsync(collectionUri);
+    var executor = new BulkExecutor(_documentClient, collectionResource);
+
+    await executor.InitializeAsync();
+
+    return await executor.BulkImportAsync(documents, enableUpsert: upsert);
+}
+</code></pre>
+<p>Le fonctionnement de cette méthode est assez simple: on récupère tout d'abord notre collection, que nous utilisons ensuite pour initialiser l'objet de type &quot;BulkExecutor&quot;, puis on exécute enfin la méthode &quot;BulkImportAsync&quot; de ce dernier pour réaliser l'import.</p>
+<p><em>Remarque: L'utilisation de la méthode &quot;InitializeAsync&quot; du BulkExecutor a pour but d'analyser la structure de la collection dans laquelle l'import sera réalisé. Ainsi, le BulkExecutor aura connaissance de la manière dont sont partitionnées nos données et pourra alors optimiser ses opérations notamment en les exécutant en parallèle sur les différentes partitions.</em></p>
+<p>La méthode &quot;BulkImportAsync&quot; retourne un objet de type &quot;BulkImportResponse&quot; dont voici le détail:</p>
+<pre><code>namespace Microsoft.Azure.CosmosDB.BulkExecutor.BulkImport
+{
+    public sealed class BulkImportResponse
+    {
+        public BulkImportResponse();
+
+        public long NumberOfDocumentsImported { get; }
+        public double TotalRequestUnitsConsumed { get; }
+        public TimeSpan TotalTimeTaken { get; }
+        public List&lt;object&gt; BadInputDocuments { get; }
+    }
+}
+</code></pre>
+<p>Un import de 50 000 documents répartis sur 50 partitions a pris 3 minutes et 21 secondes, pour une collection provisionnée avec 1000 <a href="https://docs.microsoft.com/en-us/azure/cosmos-db/request-units">RU/s</a>.</p>
+<h2>Mise à jour</h2>
+<p>Afin de mettre à jour nos documents précédement importés, nous allons utiliser la méthode &quot;BulkUpdateAsync&quot; du BulkExecutor. Celle-ci prend en paramètre un ensemble d'objets de type &quot;UpdateItem&quot; qui décrivent chacun une ou plusieurs opérations de mise à jour à appliquer à un document.</p>
+<p>Voici leur structure:</p>
+<pre><code>namespace Microsoft.Azure.CosmosDB.BulkExecutor.BulkUpdate
+{
+    public sealed class UpdateItem
+    {
+        public UpdateItem(string id, string partitionKey, IEnumerable&lt;UpdateOperation&gt; updateOperations);
+
+        [JsonProperty(&quot;id&quot;)]
+        public string Id { get; }
+        [JsonProperty(&quot;pk&quot;)]
+        public string PartitionKey { get; }
+        [JsonProperty(&quot;updates&quot;)]
+        public IEnumerable&lt;UpdateOperation&gt; UpdateOperations { get; }
+    }
+}
+</code></pre>
+<p>Les opérations de mises à jour sont décrites par des objets de type &quot;UpdateOperation&quot; pouvant être de plusieurs types:</p>
+<ul>
+<li><strong>SetUpdateOperation</strong> - assigne une valeur à une propriété</li>
+<li><strong>UnsetOperation</strong> - suppression d'une propriété</li>
+<li>IncUpdateOperation <em>- non experimentée</em></li>
+<li>RemoveUpdateOperation <em>- non experimentée</em></li>
+<li>PushUpdateOperation <em>- non experimentée</em></li>
+</ul>
+<p>Comme indiqué, je n'ai testé que les deux premiers types d'opérations. Il est fort probable que je mette à jour ce billet lorsque j'aurais trouvé une utilité aux trois autres.</p>
+<p>Pour notre exemple, nous allons appliquer trois opérations de modifications sur nos documents:</p>
+<ul>
+<li>un ajout d'une propriété simple (une chaîne de caractères)</li>
+<li>un ajout d'une propriété complexe (un objet)</li>
+<li>une suppression de la propriété &quot;DocumentIndex&quot;</li>
+</ul>
+<pre><code>List&lt;UpdateItem&gt; updateList = initialDocuments.Select(d =&gt;
+    new UpdateItem(
+        d.id,
+        d.AccountNumber,
+        new List&lt;UpdateOperation&gt; {
+            new SetUpdateOperation&lt;string&gt;(
+                &quot;NewSimpleProperty&quot;,
+                &quot;New Property Value&quot;),
+            new SetUpdateOperation&lt;dynamic&gt;(
+                &quot;NewComplexProperty&quot;,
+                new {
+                    prop1 = &quot;Hello&quot;,
+                    prop2 = &quot;World!&quot;
+                }),
+            new UnsetUpdateOperation(nameof(FakeOrder.DocumentIndex)),
+        })).ToList();
+</code></pre>
+<p>Et enfin, la méthode qui vas envoyer à la base les instructions de mise à jour:</p>
+<pre><code>public static async Task&lt;BulkUpdateResponse&gt; BulkUpdatetDocuments(
+    string database,
+    string collection,
+    IEnumerable&lt;UpdateItem&gt; updates)
+{
+    Uri collectionUri = UriFactory.CreateDocumentCollectionUri(database, collection);
+    var collectionResource = await _documentClient.ReadDocumentCollectionAsync(collectionUri);
+    var executor = new BulkExecutor(_documentClient, collectionResource);
+
+    await executor.InitializeAsync();
+
+    return await executor.BulkUpdateAsync(updates);
+}
+</code></pre>
+<p>Une mise à jour des mêmes 50 000 documents, sur 50 partitions, a pris 12 minutes et 46 secondes, toujours avec 100 RU/s de provisionnées sur la collection.</p>
+<p>Pour tester tout ça chez vous, je vous ai conconcté une application console toute simple reprenant le code expliqué dans ce billet. Vous la trouverez <a href="https://github.com/Toukiletoukan/CosmosDB-Bulk-Operations-.Net">ici</a>.</p>
+</div>
+
+            </section>
+
+        </article>
+    </main>
+    <footer class="site-footer clearfix">
+        <section class="copyright"><a href="../../index.html">Pattern Austère</a> &copy; 2018</section>
+        <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+    </footer>
+</body>
+</html>
