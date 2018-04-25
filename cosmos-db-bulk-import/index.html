@@ -22,7 +22,7 @@
     <meta property="og:description" content="Pour ce premier billet, nous allons nous intéresser aux bases Cosmos DB. Je ne vous ferai pas ici l&#x27;histoire du produit, vous en apprendrez bien plus en visitant le lien précédent. Par ailleurs, nous allons nous concentrer ici sur l&#x27;API &amp;quot;SQL&amp;quot;, anciennement appelée &amp;quot;documentdb&amp;quot;. J&#x27;ai implémenté" />
     <meta property="og:url" content="https://toukiletoukan.github.io/cosmos-db-bulk-import/" />
     <meta property="article:published_time" content="2018-04-20T15:40:23.000Z" />
-    <meta property="article:modified_time" content="2018-04-25T09:47:45.000Z" />
+    <meta property="article:modified_time" content="2018-04-25T10:00:40.000Z" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="Cosmos DB - Bulk Insert / Update en .Net" />
     <meta name="twitter:description" content="Pour ce premier billet, nous allons nous intéresser aux bases Cosmos DB. Je ne vous ferai pas ici l&#x27;histoire du produit, vous en apprendrez bien plus en visitant le lien précédent. Par ailleurs, nous allons nous concentrer ici sur l&#x27;API &amp;quot;SQL&amp;quot;, anciennement appelée &amp;quot;documentdb&amp;quot;. J&#x27;ai implémenté" />
@@ -63,7 +63,7 @@
     "headline": "Cosmos DB - Bulk Insert / Update en .Net",
     "url": "https://toukiletoukan.github.io/cosmos-db-bulk-import/",
     "datePublished": "2018-04-20T15:40:23.000Z",
-    "dateModified": "2018-04-25T09:47:45.000Z",
+    "dateModified": "2018-04-25T10:00:40.000Z",
     "description": "Pour ce premier billet, nous allons nous intéresser aux bases Cosmos DB. Je ne vous ferai pas ici l&#x27;histoire du produit, vous en apprendrez bien plus en visitant le lien précédent. Par ailleurs, nous allons nous concentrer ici sur l&#x27;API &amp;quot;SQL&amp;quot;, anciennement appelée &amp;quot;documentdb&amp;quot;. J&#x27;ai implémenté",
     "mainEntityOfPage": {
         "@type": "WebPage",
@@ -173,7 +173,7 @@ ghost.init({
 <p>Ajoutons ensuite une référence au package nuget Microsoft.Azure.CosmosDB.BulkExecutor.</p>
 <pre><code>Install-Package Microsoft.Azure.CosmosDB.BulkExecutor
 </code></pre>
-<p>Ce package permet d'effectuer imports et mises à jours des données en bulk. L'ajout dans votre projet de ce nuget ajoutera automatiquement une dépendance au package Microsoft.Azure.DocumentDB, utilisé pour toutes les interactions avec les bases CosmosDB avec l'API DocumentDB / SQL.</p>
+<p>Ce package permet d'effectuer imports et mises à jour des données en bulk. L'ajout dans votre projet de ce nuget ajoutera automatiquement une dépendance au package Microsoft.Azure.DocumentDB utilisé pour toutes les interactions avec les bases CosmosDB avec l'API DocumentDB / SQL.</p>
 <p>Ce dernier package permet d'effectuer des opérations de gestion (création de bases, création de collections, etc.) ainsi que le requêtage. Concrètement, il apporte une couche de simplification au dessus de l'API REST de CosmosDB.</p>
 <h2>Initialisation</h2>
 <p>Nous allons utiliser le client &quot;DocumentClient&quot; afin d'initialiser notre base de données de tests ainsi que la collection qui va porter nos documents. Je passe volontairement l'étape de création de la ressource Cosmos DB, celle-ci est suffisament illustrée dans la <a href="https://docs.microsoft.com/en-us/azure/cosmos-db/create-sql-api-dotnet#create-a-database-account">documentation</a>. Pensez bien, lors de cette étape, à récupérer l'URL de votre compte Cosmos DB (Url du type https://&lt;account_name&gt;.documents.azure.com:443) ainsi que la clé.</p>
@@ -239,7 +239,7 @@ ghost.init({
     return await executor.BulkImportAsync(documents, enableUpsert: upsert);
 }
 </code></pre>
-<p>Le fonctionnement de cette méthode est assez simple: on récupère tout d'abord notre collection, que nous utilisons ensuite pour initialiser l'objet de type &quot;BulkExecutor&quot;, puis on exécute enfin la méthode &quot;BulkImportAsync&quot; de ce dernier pour réaliser l'import.</p>
+<p>Le fonctionnement de cette méthode est assez simple: on récupère tout d'abord notre collection, que nous utilisons ensuite pour initialiser l'objet de type &quot;BulkExecutor&quot;, puis on exécute la méthode &quot;BulkImportAsync&quot; de ce dernier pour réaliser l'import.</p>
 <p><em>Remarque: L'utilisation de la méthode &quot;InitializeAsync&quot; du BulkExecutor a pour but d'analyser la structure de la collection dans laquelle l'import sera réalisé. Ainsi, le BulkExecutor aura connaissance de la manière dont sont partitionnées nos données et pourra alors optimiser ses opérations notamment en les exécutant en parallèle sur les différentes partitions.</em></p>
 <p>La méthode &quot;BulkImportAsync&quot; retourne un objet de type &quot;BulkImportResponse&quot; dont voici le détail:</p>
 <pre><code>namespace Microsoft.Azure.CosmosDB.BulkExecutor.BulkImport
@@ -283,7 +283,7 @@ ghost.init({
 <li>PushUpdateOperation <em>- non experimentée</em></li>
 </ul>
 <p>Comme indiqué, je n'ai testé que les deux premiers types d'opérations. Il est fort probable que je mette à jour ce billet lorsque j'aurais trouvé une utilité aux trois autres.</p>
-<p>Pour notre exemple, nous allons appliquer trois opérations de modifications sur nos documents:</p>
+<p>Pour notre exemple, nous allons appliquer trois opérations de modification sur nos documents:</p>
 <ul>
 <li>un ajout d'une propriété simple (une chaîne de caractères)</li>
 <li>un ajout d'une propriété complexe (un objet)</li>
@@ -306,7 +306,7 @@ ghost.init({
             new UnsetUpdateOperation(nameof(FakeOrder.DocumentIndex)),
         })).ToList();
 </code></pre>
-<p>Et enfin, la méthode qui vas envoyer à la base les instructions de mise à jour:</p>
+<p>Et enfin, la méthode qui va envoyer à la base les instructions de mise à jour:</p>
 <pre><code>public static async Task&lt;BulkUpdateResponse&gt; BulkUpdatetDocuments(
     string database,
     string collection,
@@ -321,7 +321,7 @@ ghost.init({
     return await executor.BulkUpdateAsync(updates);
 }
 </code></pre>
-<p>Une mise à jour des mêmes 50 000 documents, sur 50 partitions, a pris 12 minutes et 46 secondes, toujours avec 100 RU/s de provisionnées sur la collection.</p>
+<p>Une mise à jour des mêmes 50 000 documents sur 50 partitions, a pris 12 minutes et 46 secondes, toujours avec 100 RU/s de provisionnées sur la collection.</p>
 <p>Pour tester tout ça chez vous, je vous ai conconcté une application console toute simple reprenant le code expliqué dans ce billet. Vous la trouverez <a href="https://github.com/Toukiletoukan/CosmosDB-Bulk-Operations-.Net">ici</a>.</p>
 </div>
             </section>
